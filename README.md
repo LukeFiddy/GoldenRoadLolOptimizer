@@ -14,7 +14,7 @@ Select your current Region / Team / Year roll and instantly see:
 
 ## How to use
 
-Visit the hosted version or open `index.html` locally. Select your roll from the dropdowns — URLs update automatically for sharing.
+Visit the hosted version at https://lukefiddy.github.io/GoldenRoadLolOptimizer/ or open `index.html` locally. Select your roll from the dropdowns — URLs update automatically for sharing.
 
 ## Data
 
@@ -27,3 +27,7 @@ curl -sL "https://goldenroadlol.com/data.js?v=24" > data.js
 ## Not affiliated with Riot Games
 
 This is a fan tool for a fan game. League of Legends and Riot Games are trademarks of Riot Games, Inc.
+
+## Have fun
+
+The game is a fan project to have a little fun with, and this tool was a fun small project for myself to see choices of rating by the game author and the interesting resulting strategies for rerolling based on the teams chosen to be included. There is little to gain by over-optimizing the gameplay, and only the fun of the game to lose from it.
