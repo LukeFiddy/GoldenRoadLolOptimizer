@@ -52,7 +52,39 @@ select:focus{outline:none;border-color:var(--gold)}
 
 <script src="data.js"></script>
 <script>
-// NODES loaded from data.js
+// Flatten GAME_TEAMS (game's format) into NODES (one entry per team-year)
+const NODES = [];
+GAME_TEAMS.forEach(t => {
+  Object.entries(t.rosters).forEach(([yr, roster]) => {
+    const players = {};
+    ['TOP','JNG','MID','ADC','SUP'].forEach(role => {
+      players[role] = (roster[role]||[]).map(([name, rating]) => ({name, rating}));
+    });
+    NODES.push({ teamId: t.id, team: t.name, region: t.region, year: +yr, players });
+  });
+});
+
+// Compute derived fields
+const byRegionYear = {};
+const byTeamRegion = {};
+NODES.forEach((n, i) => {
+  const best = ['TOP','JNG','MID','ADC','SUP'].map(r => n.players[r].length ? Math.max(...n.players[r].map(p=>p.rating)) : 0).filter(v=>v>0);
+  n.avg = Math.round(best.reduce((s,v)=>s+v,0) / best.length * 10) / 10;
+  n.idx = i;
+  const ryKey = n.region + '|' + n.year;
+  (byRegionYear[ryKey] = byRegionYear[ryKey] || []).push(i);
+  const trKey = n.teamId + '|' + n.region;
+  (byTeamRegion[trKey] = byTeamRegion[trKey] || []).push(i);
+});
+NODES.forEach((n, i) => {
+  n.yearTargets = (byTeamRegion[n.teamId + '|' + n.region] || []).filter(j => j !== i);
+  n.teamTargets = (byRegionYear[n.region + '|' + n.year] || []).filter(j => j !== i);
+  n.regionTargets = [];
+  Object.keys(byRegionYear).forEach(key => {
+    const [reg, yr] = key.split('|');
+    if (reg !== n.region && +yr === n.year) n.regionTargets.push(...byRegionYear[key]);
+  });
+});
 
 // Build global role rankings (sorted desc by rating)
 const ROLE_RANKINGS = {};
